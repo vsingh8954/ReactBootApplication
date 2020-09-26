@@ -1,9 +1,12 @@
 import React from 'react';
 import wretch from 'wretch';
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
+//import Button from 'react-button';
+ import DatePicker from "react-datepicker";
+ import "react-datepicker/dist/react-datepicker.css";
 
-import Moment from 'moment';
+// import Moment from 'moment';
+// import ReactDatePicker from 'react-datepicker';
+// import { SingleDatePicker } from 'react-dates';
 
 const FETCH_ALLRECORD_API = "http://localhost:8090/getAllRecords";
 const FETCH_BY_START_DATE_API = "http://localhost:8090/fetchByStartDate";
@@ -17,109 +20,161 @@ class SMSDataComponent extends React.Component{
             startDate1:'',
             startDate2:'',
             endDate1:'',
-            endDate2:''
+            endDate2:'',
+            noRecord:false
         }
+        this.onChange1 = this.onChange1.bind(this);
+        this.onChange2 = this.onChange2.bind(this);
+        this.onChange3 = this.onChange3.bind(this);
+        this.onChange4 = this.onChange4.bind(this);
     }
 
     componentDidMount(){
+    
     wretch(FETCH_ALLRECORD_API)
      .get()
      .json(json => {
-        this.setState({data:json})
+         console.log(json)
+         if(json == null){
+         this.setState({noRecord:true})
+         }
+         else{
+        this.setState({data:json,noRecord:false})
+         }
       })
-
+      this.setState({}) 
+     
     }
 
-    fetchByStartDate=()=>{
-        wretch(FETCH_BY_START_DATE_API+"?startDate="+this.state.startDate1+"&endDate="+this.state.startDate2)
+fetchByStartDate=()=>{
+var stDate1 = (this.state.startDate1.getMonth() + 1)+"/"+this.state.startDate1.getDate()+"/"+this.state.startDate1.getFullYear();
+var stDate2 = (this.state.startDate2.getMonth() + 1)+"/"+this.state.startDate2.getDate()+"/"+this.state.startDate2.getFullYear();
+
+        console.log("fetchByStartDate : ",stDate1," : ",stDate2)
+        wretch(FETCH_BY_START_DATE_API+"?startDate="+stDate1+"&endDate="+stDate2)
         .get()
-        .json(json => {
-           this.setState({data:json})
+        .json(json => { console.log(json)
+            if(json == null){
+                console.log("in if ")
+         this.setState({noRecord:true})
+            }
+         else{ console.log("in else")
+        this.setState({data:json,noRecord:false})
+         }
          }) 
     }
 
     fetchByEndDate=()=>{
-        wretch(FETCH_BY_END_DATE_API+"?startDate="+this.state.endDate1+"&endDate="+this.state.endDate2)
+        var eDate1 = (this.state.endDate1.getMonth() + 1)+"/"+this.state.endDate1.getDate()+"/"+this.state.endDate1.getFullYear();
+        var eDate2 = (this.state.endDate2.getMonth() + 1)+"/"+this.state.endDate2.getDate()+"/"+this.state.endDate2.getFullYear();
+
+        wretch(FETCH_BY_END_DATE_API+"?startDate="+eDate1+"&endDate="+eDate2)
         .get()
         .json(json => {
-           this.setState({data:json})
+            if(json == null){
+                this.setState({noRecord:true})
+                   }
+                else{
+               this.setState({data:json,noRecord:false})
+                }
          })
     }
 
-    handleChange = (name, date) => {
-        var change = {};
-        change[name] = date;
-         this.setState(change);
-         console.log(name," : ",date)
-      };
+onChange1 = (date) => {
+        this.setState({
+          startDate1: date
+        });
+ };
+
+ onChange2 = (date) => {
+    this.setState({
+      startDate2: date
+    });
+};
+
+onChange3 = (date) => {
+    this.setState({
+      endDate1: date
+    });
+};
+
+onChange4 = (date) => {
+    this.setState({
+      endDate2: date
+    });
+};
 
     render (){
+        console.log(this.state.noRecord)
          return(
             <div> 
-                <h3 className="text-center">Search By Start Date</h3>
-                <table className="table table-striped">
-                    <thead>
-                    <tr>
-                        <td>Start Date</td>
-                        <td>End Date</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td  colSpan="2">
-                        {/* <DatePicker name="startDate1"
-        selected={this.state.startDate1}
-        onChange={this.handleChange.bind(this, 'startDate1')}
-      />
-                        </td>
-                        <td>
-                        <DatePicker name="startDate2"
-        selected={this.state.startDate2}
-        onChange={this.handleChange.bind(this, 'startDate2')}
-      /> */}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <button onClick={this.fetchByStartDate}>Search</button>
-                        </td>
-                    </tr>
-                    </tbody>
-          </table>
+    <div >
+        <h3>Search by Start Date</h3>
+       
+        <table width="50%">
+           
+            <tbody>
+                <tr><td>
+                <label>
+          Start Date 1:
+          </label>
+                    <DatePicker 
+          onChange={this.onChange1}  
+          selected={this.state.startDate1}
+        /></td>
+                <td>
+                <label>
+          Start Date 2:
+          </label>
+                    <DatePicker 
+          onChange={this.onChange2}
+          selected={this.state.startDate2}
+        /></td>
+        <td>
+        <button onClick={this.fetchByStartDate}>
+  Search
+</button>
+        </td>
+        </tr>
+    
+    </tbody>
+    </table>
+</div>
+<div>
+<h3>Search by End Date</h3>
+    <table width="50%">
+           
+            <tbody>
+                <tr><td>
+                <label>
+          End Date 1:
+          </label>
+                    <DatePicker
+          onChange={this.onChange3}
+          selected={this.state.endDate1}
+        /></td>
+                <td>
+                <label>
+          End Date 2:
+          </label><DatePicker
+          onChange={this.onChange4}
+          selected={this.state.endDate2}
+        /></td>
+        <td>
+        <button onClick={this.fetchByEndDate}>
+  Search
+</button>
+        </td>
+        </tr>
+    
+    </tbody>
+    </table>
+        </div>        
+ <h1 className="text-center">SMS Data</h1>
 
-          <h3 className="text-center">Search By End Date</h3>
-                <table className="table table-striped">
-                    <thead>
-                    <tr>
-                        <td>Start Date</td>
-                        <td>End Date</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td colSpan="2">
-                        {/* <DatePicker name="endDate1"
-        selected={this.state.endDate1}
-        onChange={this.handleChange.bind(this, 'endDate1')}
-      />
-                        </td>
-                        <td>
-                        <DatePicker name="endDate2"
-        selected={this.state.endDate1}
-        onChange={this.handleChange.bind(this, 'endDate2')}
-      /> */}
-                       
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <button onClick={this.fetchByEndDate}>Search</button>
-                        </td>
-                    </tr>
-                    </tbody>
-             </table>
-                <h1 className="text-center">SMS Data</h1>
-                <table className="table table-striped">
+            <p hidden={!this.state.noRecord}>No Record Found</p>
+
+                <table className="table table-striped" hidden={this.state.noRecord}>
                     <thead>
                         <tr>
                             <td>S.No</td>
