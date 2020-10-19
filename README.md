@@ -1,4 +1,4 @@
-# SMS-FS-Challenge
+# Full Stack Application using React JS and Java 8.
 Prerequisite:
 1. Node JS
 2. Jdk 1.8
@@ -6,8 +6,9 @@ Prerequisite:
 4. Postgres Database
 
 Steps to Run this Spring Boot and React CRUD Application.
-1. Run Spring Boot Application by Running main class - DemoApplication.java. PORT No - 8090
-2. Execute Command npm start inside react-boot-crud directory to start react app. PORT No - 3000
+1. Install React and setup Java 8.
+2. Run Spring Boot Application by Running main class - DemoApplication.java. PORT No - 8090
+3. Execute Command npm start inside react-boot-crud directory to start react app. PORT No - 3000
 
 API Details:
 1. /getAllRecords - To fetch all records. Method Type - GET
